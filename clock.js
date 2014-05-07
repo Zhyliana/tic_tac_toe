@@ -6,33 +6,27 @@ function Clock () {
 }
 
 Clock.prototype.tick = function(){
-  var hours = this.hours;
-  var minutes = this.minutes;
-  var seconds = this.seconds;
+  this.seconds += 5;
 
-  setInterval(function() {
-    console.log(hours + ":" + minutes + ":" + seconds);
+  if(this.seconds >= 60){
+    this.seconds -= 60;
+    this.minutes +=1;
+  }
 
-    seconds += 5;
+  if(this.minutes >= 60){
+    this.minutes -= 60;
+    this.hours +=1;
+  }
 
-    if(seconds >= 60){
-      seconds = seconds % 60;
-      minutes +=1;
-    }
-
-    if(minutes >= 60){
-      minutes = minutes % 60;
-      hours +=1;
-    }
-
-    if(hours >= 24){
-      hours = 0;
-    }
-    }, 5000);
+  if(this.hours >= 24){
+    this.hours -= 24;
+  }
+  console.log(this.hours + ":" + this.minutes + ":" + this.seconds);
 };
 
 Clock.prototype.run = function() {
-  this.tick();
+  var clock = this;
+  setInterval(clock.tick.bind(this), 5000)
 }
 
 c = new Clock().run();
