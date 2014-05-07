@@ -35,6 +35,7 @@
           var disc = parseInt(from_stack);
           var stack = parseInt(to_stack);
           console.log(stack);
+          
           if (stacks[disc].length === 0 ){
             console.log("No disc to move");
             game.play();
@@ -61,13 +62,9 @@
       this.display();
       this.getMove(this.makeMove);
     };
-
-
   }
-
 })(this);
 
-//use shift & unshift
 
 var g = new this.Hanoi.Game();
 g.play();
