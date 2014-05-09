@@ -1,0 +1,41 @@
+body, h1 {
+  font-family: "Helvetica Neue";
+  font-weight: 100;
+}
+.board{
+  z-index: 0;
+  width: 612px;
+  height: 612px;
+  margin: 150px auto;
+}
+.grid{
+  z-index: 0;
+  border: 2px solid white;
+  background-color: #eee;
+  float: left;
+  color: white;
+}
+#top {
+  margin-top: 100px;
+  margin-bottom: -100px;
+}
+#new_game {
+  font-family: "Helvetica Neue";
+  font-weight: 100;
+  margin-left: 24.2%;
+  margin-top: 10%;
+  float: left;
+  font-size: 12px;
+  border: 1px solid #999;
+  border-radius: 3px;
+  padding: 5px;
+}
+
+ #outer div:hover {
+  cursor: pointer;
+  border: none;
+  font-weight: 300;
+}
+.board canvas:hover {
+  cursor: pointer;
+}

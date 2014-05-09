@@ -1,9 +1,9 @@
 (function (root) {
-  var readline = require('readline');
-  var reader = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-  });
+  // var readline = require('readline');
+ //  var reader = readline.createInterface({
+ //    input: process.stdin,
+ //    output: process.stdout
+ //  });
 
   var TicTacToe = root.TicTacToe = (root.TicTacToe || {});
   var Board = TicTacToe.Board = function(){
