@@ -1,166 +1,168 @@
 (function (root) {
-  // var readline = require('readline');
- //  var reader = readline.createInterface({
- //    input: process.stdin,
- //    output: process.stdout
- //  });
+  var TTT = root.TTT = (root.TTT || {});
 
-  var TicTacToe = root.TicTacToe = (root.TicTacToe || {});
-  var Board = TicTacToe.Board = function(){
-    this.grid = [["_","_","_"],["_","_","_"], ["_","_","_"]]
-    this.empty = function(pos){
-      if(this.grid[pos[0]][pos[1]] === "_"){
-        return true;
-      }
-      else {
-        return false;
-      }
-    };
-
-    this.won = function() {
-      if(check("x", this.grid)){
-        return "x won!";
-      }
-      else if (check("o", this.grid)){
-        return "o won!";
-      }
-      else{
-        return false;
-      }
-    };
-
-    this.display = function(){
-      console.log(this.grid[0] + "\n" + this.grid[1] + "\n" + this.grid[2]);
-    };
-
-    this.gameOver = function(){
-      var flattened = this.grid[0].concat(this.grid[1]).concat(this.grid[2])
-
-      if(this.won() === "x won!" || this.won() === "o won!" || flattened.all(/[^_]/)){
-        return true;
-      }
-      else {
-        return false;
-      }
-    };
-
-    this.markPlace = function(mark, pos){
-      if(this.empty(pos)){
-        this.grid[pos[0]][pos[1]] = mark;
-      }
-    };
-
-    var check = function(player, grid){
-      if(checkRow(player, grid) || checkColumns(player, grid) || checkDiagonals(player, grid) ){
-        return true;
-      }
-      else {
-        return false;
-      }
-    };
-
-    Array.prototype.all = function(target){
-      var result = true;
-      for(var i = 0; i < this.length; i++){
-        if(this[i] !== target){
-          result = false;
-        }
-      }
-      return result;
-    };
-
-    var checkRow = function(player, grid){
-      var result = false
-      grid.forEach(function(row){
-        if(row.all(player)){
-          result = true;
-        }
-      });
-      return result;
-    };
-
-    var checkDiagonals = function(player, grid){
-      var diagonals = [[grid[0][0], grid[1][1], grid[2][2]],
-        [grid[0][2], grid[1][1], grid[2][0]]];
-
-        return checkRow(player, diagonals);
-    };
-
-
-    var checkColumns = function(player, grid){
-      var transposed = [];
-
-      for(var i = 0; i < grid.length; i ++){
-        transposed.push([]);
-        for(var j = 0; j < grid.length; j ++){
-          transposed[i][j] = grid[j][i];
-        }
-      };
-
-      return checkRow(player, transposed);
-    };
-
-
+  var Game = TTT.Game = function TT() {
+    this.player = Game.marks[0];
+    this.board = this.makeBoard();
   }
 
-  var Game  = TicTacToe.Game = function(player1, player2){
-    this.board = new TicTacToe.Board();
-    this.playerO = player1;
-    this.playerX = player2;
-
-    this.play = function(player){
-
-      this.board.display();
-      var game = this
-      player.getMove(function(pos){
-        game.board.markPlace(playerMark(player), pos);
-        if(game.board.gameOver()){
-          if(game.board.won()){
-            console.log(game.board.won());
-          }
-          else {
-            console.log("Tie!");
-          }
-        }
-        else {
-          var nextPlayer;
-          if(player === game.playerO){
-            nextPlayer = game.playerX;
-          }
-          else {
-            nextPlayer = game.playerO;
-          };
-          game.play(nextPlayer);
-        }
+  Game.marks = ["X", "O"];
+  Game.prototype.makeBoard = function () {
+    return _.times(3, function (i) {
+      return _.times(3, function (j) {
+        return null;
       });
-
-    };
-
-    var playerMark = function(player){
-      if(player.name === "Os"){
-        return "o";
-      }
-      else {
-        return "x";
-      };
-    };
-  }
-
-  var HumanPlayer = TicTacToe.HumanPlayer = function(name){
-    var player = this;
-    this.name = name;
-    this.getMove = function(callback){
-      reader.question("Where do you want to place your mark?", function(pos){
-        var pos = pos.split(",")
-        callback(pos);
-      });
-    };
-
+    });
   };
+
+  Game.prototype.diagonalWinner = function () {
+    var game = this;
+  
+    var diagonalPositions1 = [[0, 0], [1, 1], [2, 2]];
+    var diagonalPositions2 = [[2, 0], [1, 1], [0, 2]];
+  
+    var winner = null;
+    _(Game.marks).each(function (mark) {
+      function didWinDiagonal (diagonalPositions) {
+        return _.every(diagonalPositions, function (pos) {
+          return game.board[pos[0]][pos[1]] === mark;
+        });
+      }
+  
+      var won = _.any(
+        [diagonalPositions1, diagonalPositions2],
+        didWinDiagonal
+      );
+  
+      if (won) {
+        winner = mark;
+      }
+    });
+  
+    return winner;
+  };
+  
+  
+  Game.prototype.horizontalWinner = function () {
+    var game = this;
+  
+    var winner = null;
+    _(Game.marks).each(function (mark) {
+      var indices = _.range(0, 3);
+  
+      var won = _(indices).any(function (i) {
+        return _(indices).every(function (j) {
+          return game.board[i][j] === mark;
+        });
+      });
+  
+      if (won) {
+        winner = mark;
+      }
+    });
+  
+    return winner;
+  };
+  
+  Game.prototype.verticalWinner = function () {
+    var game = this;
+  
+    var winner = null;
+    _(Game.marks).each(function (mark) {
+      var indices = _.range(0, 3);
+  
+      var won = _(indices).any(function (j) {
+        return _(indices).every(function (i) {
+          return game.board[i][j] === mark;
+        });
+      });
+  
+      if (won) {
+        winner = mark;
+      }
+    });
+  
+    return winner;
+  };
+  
+  // Array.prototype.all = function(target){
+  //   var result = true;
+  //   
+  //   var arr = this;
+  //   for(var i = 0; i < arr.length; i++){
+  //     if(arr[i] !== target){
+  //       result = false;
+  //     }
+  //   }
+  //   return result;
+  // };
+  // 
+  // Game.prototype.check = function(grid, player){
+  //   var result = null;   
+  //   var player = player;
+  //   
+  //   grid.forEach(function(row){
+  //     if(row.all(player)){
+  //       result = true;
+  //     }
+  //   });
+  //   
+  //   return result;
+  // };
+  // 
+  // Game.prototype.horizontalWinner = function(){
+  //   return this.check(this.board, this.player);
+  // };
+  // 
+  // Game.prototype.diagonalWinner = function(){
+  //   var diagonals = [[this.board[0][0], this.board[1][1], this.board[2][2]],
+  //     [this.board[0][2], this.board[1][1], this.board[2][0]]];
+  // 
+  //     return diagonals.all(this.player);
+  // };
+  // 
+  // 
+  // Game.prototype.verticalWinner = function(){
+  //   var transposed = [];
+  // 
+  //   for(var i = 0; i < this.board.length; i ++){
+  //     transposed.push([]);
+  //     for(var j = 0; j < this.board.length; j ++){
+  //       transposed[i][j] = grid[j][i];
+  //     }
+  //   };
+  // 
+  //   return this.check(transposed, this.player);
+  // };
+
+  Game.prototype.placeMark = function (pos) {
+    this.board[pos[0]][pos[1]] = this.player;
+  };
+
+  Game.prototype.switchPlayer = function () {
+    if (this.player === Game.marks[0]) {
+      this.player = Game.marks[1];
+    } else {
+      this.player = Game.marks[0];
+    }
+  };
+  
+  Game.prototype.move = function (pos) {
+    this.placeMark(pos);
+
+    if (this.winner()) {
+      return true
+    } else {
+      this.switchPlayer();
+    };
+  };
+
+  Game.prototype.winner = function () {
+    return (
+      this.diagonalWinner() || 
+      this.horizontalWinner() || 
+      this.verticalWinner()
+    );
+  };
+
 })(this);
-
-
-var p1 = new this.TicTacToe.HumanPlayer("Os");
-var p2 = new this.TicTacToe.HumanPlayer("Xs");
-var g = new this.TicTacToe.Game(p1, p2);
-g.play(p1);

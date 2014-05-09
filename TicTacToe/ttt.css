@@ -1,0 +1,56 @@
+h1, .X, .O {
+  font-family: "Helvetica Neue";
+}
+
+h1 {
+  color: #2b669a;
+  text-align: center;
+  font-weight: 400;
+  font-size: 65px;
+}
+
+#board, .square {
+  border-radius: 7px;
+}
+
+#board{
+  width: 450px;
+  margin: 0px auto;
+  border: #dbdbdb solid 13px;
+}
+
+#board:after {
+  content: "";
+  clear:both;
+  display:block;
+}
+
+.square {
+  width: 150px;
+  height: 150px;
+  float: left;
+  background-color: #f8f8f8;
+  outline: white solid 2px;
+  position: relative;
+}
+
+.square:hover{
+  background-color: #f2dede;
+  background-position: 0 -15px;
+}
+
+.O , .X {
+  font-size: 80px;
+  font-weight: 200;
+  position: absolute;
+  left: 30%;
+  top: 20%;
+}
+
+.X {
+  color:  #f8a8a9;
+}
+
+.O {
+  color: #357ebd;
+}
