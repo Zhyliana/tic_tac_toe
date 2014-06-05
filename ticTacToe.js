@@ -7,6 +7,7 @@
   }
 
   Game.marks = ["X", "O"];
+  
   Game.prototype.makeBoard = function () {
     return _.times(3, function (i) {
       return _.times(3, function (j) {
@@ -84,56 +85,6 @@
   
     return winner;
   };
-  
-  // Array.prototype.all = function(target){
-  //   var result = true;
-  //   
-  //   var arr = this;
-  //   for(var i = 0; i < arr.length; i++){
-  //     if(arr[i] !== target){
-  //       result = false;
-  //     }
-  //   }
-  //   return result;
-  // };
-  // 
-  // Game.prototype.check = function(grid, player){
-  //   var result = null;   
-  //   var player = player;
-  //   
-  //   grid.forEach(function(row){
-  //     if(row.all(player)){
-  //       result = true;
-  //     }
-  //   });
-  //   
-  //   return result;
-  // };
-  // 
-  // Game.prototype.horizontalWinner = function(){
-  //   return this.check(this.board, this.player);
-  // };
-  // 
-  // Game.prototype.diagonalWinner = function(){
-  //   var diagonals = [[this.board[0][0], this.board[1][1], this.board[2][2]],
-  //     [this.board[0][2], this.board[1][1], this.board[2][0]]];
-  // 
-  //     return diagonals.all(this.player);
-  // };
-  // 
-  // 
-  // Game.prototype.verticalWinner = function(){
-  //   var transposed = [];
-  // 
-  //   for(var i = 0; i < this.board.length; i ++){
-  //     transposed.push([]);
-  //     for(var j = 0; j < this.board.length; j ++){
-  //       transposed[i][j] = grid[j][i];
-  //     }
-  //   };
-  // 
-  //   return this.check(transposed, this.player);
-  // };
 
   Game.prototype.placeMark = function (pos) {
     this.board[pos[0]][pos[1]] = this.player;
@@ -163,6 +114,26 @@
       this.horizontalWinner() || 
       this.verticalWinner()
     );
+  };
+  
+  Game.prototype.isEmptyPos = function (pos) {
+   return (this.board[pos[0]][pos[1]] === null);
+  };
+   
+  Game.prototype.tie = function(){
+    var board = this.board;
+    var game = this;
+    var game_over = false;
+    
+    [0, 1, 2].forEach(function(x){
+      [0, 1, 2].forEach(function(y){
+        if (game.isEmptyPos([x,y])){
+          return game_over = true
+        }
+      })
+    })
+    
+    return game_over
   };
 
 })(this);

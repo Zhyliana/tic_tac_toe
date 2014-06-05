@@ -17,8 +17,13 @@
     $square.addClass('clicked-square')
     $square.append("<div class=" + this.game.player + ">" + this.game.player + "</div>");
     
-    if (this.game.move(eval(pos))) {
-      alert("You won!")
+    if ( this.game.move(eval(pos)) ) {
+      alert("You Won!");
+    } else if ( !this.game.tie() ){
+      alert("Tie");
+    };
+    
+    if ( !this.game.tie() || this.game.winner() ){
       this.setUpBoard();
       this.game = new TTT.Game();
     };
