@@ -18,12 +18,11 @@
 
     if (move !== "next") {
       if (move === "win"){
-        $("#title").text(this.game.player + " won!") 
+        $("#board").prepend("<div class=\"modal\">" + this.game.player + " won!<br><br><div id=\"subtitle\">Press any key to start new game</div></div>")
       } else if (move === "tie"){
-        $("#title").text("Tie!")
+        $("#board").prepend("<div class=\"modal\">Tie!<br><br><div id=\"subtitle\">Press any key to start new game</div></div>")
       }
-      
-      $("#subtitle").html("<h4>Press any key to start new game</h4>")
+
       $(".square").toggleClass("empty clicked")
       
       var UI = this;

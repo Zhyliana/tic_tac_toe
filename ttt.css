@@ -2,29 +2,43 @@ body {
   background: #49c9af;
 }
 
-h1, h4, .X, .O {
+h1, h4, .X, .O, .modal {
   font-family: "Helvetica Neue";
 }
 
-h1, h4 {
+h1, h4, .modal {
   color: #f8f8f8;
   text-align: center;
   font-weight: 400;
 }
 
 h1 {
-  font-size: 65px
+  font-size: 65px;
+}
+.modal{
+  color: #666666;
+}
+
+.modal {
+  z-index: 1;
+  font-size: 40px;
+  position: absolute;
+  margin: 125px 90px;
+}
+
+#subtitle {
+  font-size: 20px;
 }
 
 #board, .square {
   border-radius: 7px;
+  background: #f8f8f8;
 }
 
-#board{
+#board {
   width: 450px;
   margin: 0px auto;
   border: #dbdbdb solid 13px;
-  background: #f8f8f8;
 }
 
 #board:after {
@@ -37,17 +51,15 @@ h1 {
   width: 150px;
   height: 150px;
   float: left;
-  background-color: #f8f8f8;
   outline: white solid 2px;
   position: relative;
 }
 
 .square:hover{
   background-color: #f2dede;
-  background-position: 0 -15px;
 }
 
-.O , .X {
+.O, .X {
   font-size: 80px;
   font-weight: 200;
   position: absolute;
