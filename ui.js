@@ -1,40 +1,48 @@
 (function (root) {
   var TTT = root.TTT = (root.TTT || {});
 
-
   var GameUi = TTT.GameUi = function($rootEl) {
     this.$el = $rootEl;
     this.game = new TTT.Game();
     this.setUpBoard();
-    $("#board").on("click", ".unclicked-square", this.markBoard.bind(this));
+    $("#board").on("click", ".empty", this.markBoard.bind(this));
   }
 
   GameUi.prototype.markBoard = function(event) {
     var $square = $(event.target);
-    var pos = $square.attr("id");
+    var pos = $square.data("pos");
+    var move = this.game.move(eval(pos))
 
-    $square.removeClass('unclicked-square')
-    $square.addClass('clicked-square')
+    $square.toggleClass("empty clicked")
     $square.append("<div class=" + this.game.player + ">" + this.game.player + "</div>");
-    
-    if ( this.game.move(eval(pos)) ) {
-      alert("You Won!");
-    } else if ( !this.game.tie() ){
-      alert("Tie");
+
+    if (move !== "next") {
+      if (move === "win"){
+        $("#title").text(this.game.player + " won!") 
+      } else if (move === "tie"){
+        $("#title").text("Tie!")
+      }
+      
+      $("#subtitle").html("<h4>Press any key to start new game</h4>")
+      $(".square").toggleClass("empty clicked")
+      
+      var UI = this;
+      $("body").keypress(function(){
+        $("#title").text("TicTacToe!")
+        $("#subtitle").text("")
+        UI.setUpBoard();
+        UI.game = new TTT.Game();
+      });
     };
     
-    if ( !this.game.tie() || this.game.winner() ){
-      this.setUpBoard();
-      this.game = new TTT.Game();
-    };
-  }
+  };
 
   GameUi.prototype.setUpBoard = function() {
     var boardString = "";
        
     for(var r = 0; r < 3; r++){
       for(var c = 0; c < 3; c++){
-        boardString += "<div class='square unclicked-square' id=[" + r + ","+ c +"]></div>";
+        boardString += "<div class=\"square empty\" data-pos=[" + r + "," + c +"]></div>";
       }
     };
     
@@ -43,7 +51,6 @@
 
   GameUi.prototype.setUpEvents = function () {
     this.game.run();
-    this.$el.click('.square', markBoard(this));
   };
 
 })(this);

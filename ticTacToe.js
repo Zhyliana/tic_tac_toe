@@ -16,73 +16,72 @@
     });
   };
 
-  Game.prototype.diagonalWinner = function () {
+  Game.prototype.diagonalWin = function(){
     var game = this;
-  
-    var diagonalPositions1 = [[0, 0], [1, 1], [2, 2]];
-    var diagonalPositions2 = [[2, 0], [1, 1], [0, 2]];
-  
+    var diagonal1 = [[0, 0], [1, 1], [2, 2]];
+    var diagonal2 = [[2, 0], [1, 1], [0, 2]];
     var winner = null;
-    _(Game.marks).each(function (mark) {
-      function didWinDiagonal (diagonalPositions) {
-        return _.every(diagonalPositions, function (pos) {
+    
+    _(Game.marks).each(function (mark){
+      function diagonalWinTest (diagonals){
+        return _.every(diagonals, function(pos){
           return game.board[pos[0]][pos[1]] === mark;
         });
       }
-  
+      
       var won = _.any(
-        [diagonalPositions1, diagonalPositions2],
-        didWinDiagonal
+        [diagonal1, diagonal2],
+        diagonalWinTest
       );
-  
+      
       if (won) {
         winner = mark;
       }
     });
-  
-    return winner;
+    
+    return winner;    
   };
   
   
-  Game.prototype.horizontalWinner = function () {
+  Game.prototype.horizontalWin = function(){
     var game = this;
-  
     var winner = null;
-    _(Game.marks).each(function (mark) {
-      var indices = _.range(0, 3);
-  
-      var won = _(indices).any(function (i) {
-        return _(indices).every(function (j) {
-          return game.board[i][j] === mark;
+    
+    _(Game.marks).each(function (mark){
+      var validIdx = _.range(0, 3);
+    
+      var won = _(validIdx).any(function(i){
+        return _(validIdx).every(function(j){
+          return game.board[i][j] === mark
         });
       });
-  
+      
       if (won) {
         winner = mark;
-      }
+      }      
     });
-  
+    
     return winner;
   };
   
-  Game.prototype.verticalWinner = function () {
+  Game.prototype.verticalWin = function () {
     var game = this;
-  
+
     var winner = null;
     _(Game.marks).each(function (mark) {
-      var indices = _.range(0, 3);
-  
-      var won = _(indices).any(function (j) {
-        return _(indices).every(function (i) {
-          return game.board[i][j] === mark;
+      var validIdx = _.range(0, 3);
+    
+      var won = _(validIdx).any(function(i){
+        return _(validIdx).every(function(j){
+          return game.board[j][i] === mark
         });
       });
-  
+      
       if (won) {
         winner = mark;
       }
     });
-  
+
     return winner;
   };
 
@@ -99,21 +98,24 @@
   };
   
   Game.prototype.move = function (pos) {
-    this.placeMark(pos);
-
-    if (this.winner()) {
-      return true
-    } else {
+    if(this.isEmptyPos(pos)){
+      this.placeMark(pos);
       this.switchPlayer();
+    };
+    
+    if (this.winner()) {
+      return "win"
+    } else if (this.tie()) {
+      return "tie"
+    } else {
+      return "next"
     };
   };
 
-  Game.prototype.winner = function () {
+  Game.prototype.winner = function(){
     return (
-      this.diagonalWinner() || 
-      this.horizontalWinner() || 
-      this.verticalWinner()
-    );
+      this.horizontalWin() || this.verticalWin() || this.diagonalWin() 
+    )
   };
   
   Game.prototype.isEmptyPos = function (pos) {
@@ -121,14 +123,14 @@
   };
    
   Game.prototype.tie = function(){
-    var board = this.board;
     var game = this;
-    var game_over = false;
+    var board = this.board;
+    var game_over = true;
     
     [0, 1, 2].forEach(function(x){
       [0, 1, 2].forEach(function(y){
         if (game.isEmptyPos([x,y])){
-          return game_over = true
+          return game_over = false
         }
       })
     })
